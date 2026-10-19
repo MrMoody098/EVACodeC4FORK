@@ -2,14 +2,16 @@ import json
 from datetime import datetime
 import matplotlib.pyplot as plt
 
+# INPUT
 start_year = int(input("Start year: "))
 end_year = int(input("End year: "))
 
+#DATA READING
 with open("eva-data.json", "r", encoding="utf-8") as file:
     eva_data = json.load(file)
 
 records = []
-
+#DATA PREPROCESSING
 for eva in eva_data:
     date_text = eva.get("date")
     duration_text = eva.get("duration")
@@ -30,6 +32,7 @@ for eva in eva_data:
 
 records.sort(key=lambda record: record[0])
 
+#DATA ANALYSIS
 dates = []
 cumulative_hours = []
 total_hours = 0
@@ -71,11 +74,13 @@ for date, duration_hours, country_text, crew_text in records:
         if name:
             crew_hours[name] = crew_hours.get(name, 0) + duration_hours
 
+
 print("\nTop 5 astronauts by EVA time:")
 top_crew = sorted(crew_hours.items(), key=lambda item: item[1], reverse=True)[:5]
 for name, hours in top_crew:
     print(f"  {name} {hours:.1f} hours")
 
+#DATA VISUALIZATION
 plt.plot(dates, cumulative_hours)
 plt.title(f"USA: {USA_hours:.1f} Hours      Russia: {Russia_hours:.1f} Hours")
 plt.xlabel("Year")
