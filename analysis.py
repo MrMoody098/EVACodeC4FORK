@@ -17,6 +17,39 @@ def country_totals(records, countries=("USA", "Russia")):
     return totals
 
 
+def country_counts(records, countries):
+    counts = {country: 0 for country in countries}
+    for record in records:
+        if record.country in counts:
+            counts[record.country] += 1
+    return counts
+
+
+def countries(records):
+    return sorted({record.country for record in records})
+
+
+def compare_countries(records, country_a, country_b):
+    selected = (country_a, country_b)
+    totals = country_totals(records, selected)
+    counts = country_counts(records, selected)
+    stats = {
+        country: {
+            "count": counts[country],
+            "total_hours": totals[country],
+            "average_hours": totals[country] / counts[country] if counts[country] else None,
+        }
+        for country in selected
+    }
+    if totals[country_a] > totals[country_b]:
+        leader = country_a
+    elif totals[country_b] > totals[country_a]:
+        leader = country_b
+    else:
+        leader = None
+    return stats, leader
+
+
 def classify_duration(duration_hours):
     if duration_hours < 4:
         return "Short"

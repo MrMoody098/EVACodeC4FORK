@@ -8,7 +8,7 @@ def parse_duration(duration_text):
     return hours + minutes / 60
 
 
-def prepare_records(raw_data, start_year, end_year):
+def parse_records(raw_data):
     records = []
     for eva in raw_data:
         date_text = eva.get("date")
@@ -20,10 +20,18 @@ def prepare_records(raw_data, start_year, end_year):
             continue
 
         date = datetime.fromisoformat(date_text)
-        if not (start_year <= date.year <= end_year):
-            continue
-
         records.append(EVARecord(date, parse_duration(duration_text), country_text, crew_text))
 
     records.sort(key=lambda record: record.date)
     return records
+
+
+def filter_by_year(records, start_year, end_year):
+    return [record for record in records if start_year <= record.date.year <= end_year]
+
+
+def match_country(name, known_countries):
+    for country in known_countries:
+        if country.lower() == name.strip().lower():
+            return country
+    return None
